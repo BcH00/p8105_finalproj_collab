@@ -3,43 +3,43 @@ Proposal
 Beicheng Huang
 2023-11-11
 
-\##Proposal
+\**Proposal**
 
-\##The group members (names and UNIs)
+\* The group members (names and UNIs)
 
 Wendy Zhou (wz2630), Jianing Liu (jl6325), Ye Yuan (yy3295), Beicheng
 Huang (bh2852), Zhiqi Liu (al4327)
 
-\##The tentative project title
+\* The tentative project title
 
 Assessing SARS-CoV-2 Concentrations in NYC Wastewater
 
-\##The motivation for this project
+\* The motivation for this project
 
 COVID-19 cases are constantly fluctuating and to better understand
 recent trends, we decided to analyze SARS-CoV-2 concentrations in
 wastewater data for the possibility of future public health
 interventions.
 
-\##The intended final products
+\* The intended final products
 
 Webpage with project report, data processing, interactive map,
 statistical analyses, and screencast pages. project report:
 goals/purposes data processing: data sources and methods analyses:
 showing associations / trends
 
-\##The anticipated data sources
+\* The anticipated data sources
 
 SARS-CoV-2 concentrations measured in NYC Wastewater (NYC Open Data),
 DOHMH COVID-19 Antibody-by-Borough (NYC Open Data)
 
-\##The planned analyses / visualizations / coding challenges
+\* The planned analyses / visualizations / coding challenges
 
 map of SARS-CoV-2 wastewater concentrations in NYC map of COVID-19
 Antibody by Borough in NYC Have yet to decide on statistical analyses
 method based on variables available
 
-\##The planned timeline
+\* The planned timeline
 
 Meet every Tuesday and Thursday after class, 11:30am - 12:30pm Nov 13 -
 Nov 19 Data collection and cleaning Nov 20 - Nov 26 Data analysis and
