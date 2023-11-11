@@ -41,7 +41,13 @@ method based on variables available
 
 \##The planned timeline
 
-Meet every Tuesday and Thursday after class, 11:30am - 12:30pm Nov 13 -
-Nov 19 Data collection and cleaning Nov 20 - Nov 26 Data analysis and
-visualizations Nov 27 - Dec 03 Working on webpage Dec 04 - Dec 10
-Finalizing webpage, writing report, preparing in-class discussion
+Meet every Tuesday and Thursday after class, 11:30am - 12:30pm
+
+Nov 13 - Nov 19 Data collection and cleaning
+
+Nov 20 - Nov 26 Data analysis and visualizations
+
+Nov 27 - Dec 03 Working on webpage
+
+Dec 04 - Dec 10 Finalizing webpage, writing report, preparing in-class
+discussion
