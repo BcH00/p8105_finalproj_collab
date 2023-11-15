@@ -1,8 +1,6 @@
 Proposal
 ================
 
-## Proposal
-
 **The group members (names and UNIs)**
 
 Wendy Zhou (wz2630), Jianing Liu (jl6325), Ye Yuan (yy3295), Beicheng
