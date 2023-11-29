@@ -78,10 +78,27 @@ merge_df <- inner_join(map_new, wwtp_cleaned, by = "wrrf_abbreviation")
 merge_drop <-
   merge_df |>
   drop_na(concentration_sars_co_v_2_gene_target_n1_copies_l) |>
-  separate(sample_date, into = c("month", "day", "year"), convert = TRUE)
+  separate(sample_date, into = c("month", "day", "year"), convert = TRUE) %>% 
+   mutate(year = as.character(year),
+         month = recode(month,
+                        "1" = "January",
+                        "2" = "February",
+                        "3" = "March",
+                        "4" = "April",
+                        "5" = "May",
+                        "6" = "June",
+                        "7" = "July",
+                        "8" = "August",
+                        "9" = "September",
+                        "10" = "October",
+                        "11" = "November",
+                        "12" = "December"))
+
+
+merge_drop
 ```
 
 ```{r}
-
+1
 ```
 
