@@ -1,0 +1,66 @@
+---
+title: "Final"
+author: "Jianing Liu"
+date: "2023-11-29"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(ggridges)
+library(patchwork)
+library(readxl)
+library(lubridate)
+
+knitr::opts_chunk$set(
+	echo = TRUE,
+	warning = FALSE,
+	fig.width = 16, 
+  fig.height = 12,
+  out.width = "90%"
+)
+
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
+
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+
+scale_colour_discrete = scale_colour_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
+```
+
+
+```{r}
+map <-
+  read_csv("data/HydroWASTE_v10.csv")
+
+wwtp <-
+  read_csv("data/SARS-CoV-2_concentrations_measured_in_NYC_Wastewater_20231129.csv")
+```
+
+
+```{r}
+map |>
+  janitor::clean_names() |>
+  select(waste_id, wwtp_name, lat_wwtp, lon_wwtp) |>
+  mutate(wttp_abb = recode( wwtp_name,
+    RK = "New York C   Rockaway WPCP",
+    RH = "New York C   Red Hook WPCP",
+    PR = "New York C   Port Richmond WPCP",
+    OB = "New York C   Oakwood Beach WPCP",
+    W26 = "New York C   26th Ward WPCP",
+    TI = "New York C   Tallman Island WPCP",
+    NR = "New York C   North River WPCP",
+    CI = "New York C   Coney Island WPCP",
+    JA = "New York C   Jamaica WPCP",
+    HP = "New York C   Hunts Point WPCP",
+    OH = "New York C   Owls Head WPCP",
+    BB = "New York C   Bowery Bay WPCP",
+    NC = "New York C   Newtown Creek WPCP",
+    WI = "New York C   Wards Island WPCP",
+  ))
+```
+
+
