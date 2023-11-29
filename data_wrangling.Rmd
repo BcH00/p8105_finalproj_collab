@@ -74,4 +74,14 @@ wwtp_cleaned <-
 merge_df <- inner_join(map_new, wwtp_cleaned, by = "wrrf_abbreviation")
 ```
 
+```{r}
+merge_drop <-
+  merge_df |>
+  drop_na(concentration_sars_co_v_2_gene_target_n1_copies_l) |>
+  separate(sample_date, into = c("month", "day", "year"), convert = TRUE)
+```
+
+```{r}
+
+```
 
