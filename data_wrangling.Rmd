@@ -42,33 +42,36 @@ wwtp <-
 
 
 ```{r clean the mapping data file and rename plant names}
-map |>
+map_new <-
+  map |>
   janitor::clean_names() |>
   select(waste_id, wwtp_name, lat_wwtp, lon_wwtp) |>
   mutate(wrrf_abbreviation = recode( wwtp_name,
-    RK = "New York C   Rockaway WPCP",
-    RH = "New York C   Red Hook WPCP",
-    PR = "New York C   Port Richmond WPCP",
-    OB = "New York C   Oakwood Beach WPCP",
-    '26W' = "New York C   26th Ward WPCP",
-    TI = "New York C   Tallman Island WPCP",
-    NR = "New York C   North River WPCP",
-    CI = "New York C   Coney Island WPCP",
-    JA = "New York C   Jamaica WPCP",
-    HP = "New York C   Hunts Point WPCP",
-    OH = "New York C   Owls Head WPCP",
-    BB = "New York C   Bowery Bay WPCP",
-    NC = "New York C   Newtown Creek WPCP",
-    WI = "New York C   Wards Island WPCP",
+    "New York C   Rockaway WPCP" = "RK",
+    "New York C   Red Hook WPCP" = "RH",
+    "New York C   Port Richmond WPCP" = "PR",
+    "New York C   Oakwood Beach WPCP" = "OB",
+    "New York C   26th Ward WPCP" = "26W",
+    "New York C   Tallman Island WPCP" = "TI",
+    "New York C   North River WPCP" = "NR",
+    "New York C   Coney Island WPCP" = "CI",
+    "New York C   Jamaica WPCP" = "JA",
+    "New York C   Hunts Point WPCP" = "HP",
+    "New York C   Owls Head WPCP" = "OH",
+    "New York C   Bowery Bay WPCP" = "BB",
+    "New York C   Newtown Creek WPCP" = "NC",
+    "New York C   Wards Island WPCP" = "WI",
   ))
 ```
 
 ```{r clean the waste water data file}
-wwtp |>
+wwtp_cleaned <-
+  wwtp |>
   janitor:: clean_names()
 ```
 
 ```{r}
-merge_df <- left_join(map, wwtp, by = "wrrf_abbreviation")
+merge_df <- left_join(map_new, wwtp_cleaned, by = "wrrf_abbreviation")
+
 ```
 
