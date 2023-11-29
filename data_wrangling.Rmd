@@ -77,7 +77,8 @@ merge_df <- inner_join(map_new, wwtp_cleaned, by = "wrrf_abbreviation")
 ```{r}
 merge_drop <-
   merge_df |>
-  drop_na(concentration_sars_co_v_2_gene_target_n1_copies_l) |>
+  rename(concentration = concentration_sars_co_v_2_gene_target_n1_copies_l) |>
+  drop_na(concentration) |>
   separate(sample_date, into = c("month", "day", "year"), convert = TRUE) %>% 
    mutate(year = as.character(year),
          month = recode(month,
@@ -92,13 +93,17 @@ merge_drop <-
                         "9" = "September",
                         "10" = "October",
                         "11" = "November",
-                        "12" = "December"))
-
+                        "12" = "December")) |>
+  select(-waste_id, -test_date, -per_capita_sars_co_v_2_load_n1_copies_per_day_per_population, -population_served_estimated, -wwtp_name)
 
 merge_drop
 ```
 
 ```{r}
-
+merge_drop |>
+  filter(year == 2023, technology == "RT-qPCR") |>
+  group_by(month, wrrf_abbreviation) |>
+  ggplot(aes(x = month, y = concentration_sars_co_v_2_gene_target_n1_copies_l, color = wrrf_abbreviation)) +
+  geom_point(alpha = .5)
 ```
 
