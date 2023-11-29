@@ -71,7 +71,7 @@ wwtp_cleaned <-
 ```
 
 ```{r}
-merge_df <- left_join(map_new, wwtp_cleaned, by = "wrrf_abbreviation")
-
+merge_df <- inner_join(map_new, wwtp_cleaned, by = "wrrf_abbreviation")
 ```
+
 
