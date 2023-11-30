@@ -11,6 +11,7 @@ library(ggridges)
 library(patchwork)
 library(readxl)
 library(lubridate)
+library(leaflet)
 
 knitr::opts_chunk$set(
 	echo = TRUE,
@@ -75,12 +76,15 @@ merge_df <- inner_join(map_new, wwtp_cleaned, by = "wrrf_abbreviation")
 ```
 
 ```{r}
-merge_drop <-
+nyc_wwtp <-
   merge_df |>
   rename(concentration = concentration_sars_co_v_2_gene_target_n1_copies_l) |>
   drop_na(concentration) |>
   separate(sample_date, into = c("month", "day", "year"), convert = TRUE) %>% 
-   mutate(year = as.character(year),
+   mutate(
+     mean_concentration <- mean(concentration),
+     year = as.character(year),
+          month = factor(month, levels = 1:12),
          month = recode(month,
                         "1" = "January",
                         "2" = "February",
@@ -100,10 +104,22 @@ merge_drop
 ```
 
 ```{r}
-merge_drop |>
-  filter(year == 2023, technology == "RT-qPCR") |>
+nyc_wwtp |>
+  filter(year == 2022, technology == "RT-qPCR") |>
   group_by(month, wrrf_abbreviation) |>
-  ggplot(aes(x = month, y = concentration_sars_co_v_2_gene_target_n1_copies_l, color = wrrf_abbreviation)) +
+  ggplot(aes(x = month, y = concentration, color = wrrf_abbreviation)) +
   geom_point(alpha = .5)
+```
+
+
+```{r}
+wwtp_map <-
+  nyc_wwtp |>
+  leaflet() |>
+  addTiles() |>
+  addMarkers(
+    ~lon_wwtp, ~lat_wwtp
+  )
+
 ```
 
