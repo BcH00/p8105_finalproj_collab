@@ -11,6 +11,7 @@ library(ggridges)
 library(patchwork)
 library(readxl)
 library(lubridate)
+library(leaflet)
 
 knitr::opts_chunk$set(
 	echo = TRUE,
@@ -32,7 +33,7 @@ scale_fill_discrete = scale_fill_viridis_d
 ```
 
 
-```{r}
+```{r load the data files}
 map <-
   read_csv("data/HydroWASTE_v10.csv")
 
@@ -70,18 +71,20 @@ wwtp_cleaned <-
   janitor:: clean_names()
 ```
 
-```{r}
+```{r merge the waste water data file and mapping data file}
 merge_df <- inner_join(map_new, wwtp_cleaned, by = "wrrf_abbreviation")
 ```
 
-```{r}
-merge_drop <-
+```{r choose the variables from the merged data file}
+nyc_wwtp <-
   merge_df |>
   rename(concentration = concentration_sars_co_v_2_gene_target_n1_copies_l) |>
   drop_na(concentration) |>
   separate(sample_date, into = c("month", "day", "year"), convert = TRUE) %>% 
-   mutate(year = as.character(year),
-         month = recode(month,
+   mutate(
+     year = as.character(year),
+     month = factor(month, levels = 1:12),
+     month = recode(month,
                         "1" = "January",
                         "2" = "February",
                         "3" = "March",
@@ -96,14 +99,28 @@ merge_drop <-
                         "12" = "December")) |>
   select(-waste_id, -test_date, -per_capita_sars_co_v_2_load_n1_copies_per_day_per_population, -population_served_estimated, -wwtp_name)
 
-merge_drop
+nyc_wwtp
 ```
 
 ```{r}
-merge_drop |>
-  filter(year == 2023, technology == "RT-qPCR") |>
+nyc_wwtp |>
+  filter(year == 2022, technology == "RT-qPCR") |>
   group_by(month, wrrf_abbreviation) |>
-  ggplot(aes(x = month, y = concentration_sars_co_v_2_gene_target_n1_copies_l, color = wrrf_abbreviation)) +
+  ggplot(aes(x = month, y = concentration, color = wrrf_abbreviation)) +
   geom_point(alpha = .5)
 ```
 
+
+```{r}
+library(leaflet)
+wwtp_map <-
+  nyc_wwtp |>
+  leaflet() |>
+  addTiles() |>
+  addMarkers(
+    ~lon_wwtp, ~lat_wwtp
+  )
+
+wwtp_map
+```
+14 wwtps map
