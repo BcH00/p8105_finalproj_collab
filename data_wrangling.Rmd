@@ -33,7 +33,7 @@ scale_fill_discrete = scale_fill_viridis_d
 ```
 
 
-```{r}
+```{r load the data files}
 map <-
   read_csv("data/HydroWASTE_v10.csv")
 
@@ -71,11 +71,11 @@ wwtp_cleaned <-
   janitor:: clean_names()
 ```
 
-```{r}
+```{r merge the waste water data file and mapping data file}
 merge_df <- inner_join(map_new, wwtp_cleaned, by = "wrrf_abbreviation")
 ```
 
-```{r}
+```{r choose the variables from the merged data file}
 nyc_wwtp <-
   merge_df |>
   rename(concentration = concentration_sars_co_v_2_gene_target_n1_copies_l) |>
@@ -100,7 +100,7 @@ nyc_wwtp <-
                         "12" = "December")) |>
   select(-waste_id, -test_date, -per_capita_sars_co_v_2_load_n1_copies_per_day_per_population, -population_served_estimated, -wwtp_name)
 
-merge_drop
+nyc_wwtp
 ```
 
 ```{r}
