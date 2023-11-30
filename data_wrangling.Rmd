@@ -2,7 +2,7 @@
 title: "Final"
 author: "Jianing Liu"
 date: "2023-11-29"
-output: github_document
+output: htlm_document
 ---
 
 ```{r setup, include=FALSE}
