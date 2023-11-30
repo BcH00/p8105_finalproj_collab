@@ -113,7 +113,7 @@ nyc_wwtp |>
 
 ```{r}
 library(leaflet)
-maps <-
+wwtp_map <-
   nyc_wwtp |>
   leaflet() |>
   addTiles() |>
@@ -121,6 +121,6 @@ maps <-
     ~lon_wwtp, ~lat_wwtp
   )
 
-maps
+wwtp_map
 ```
 14 wwtps map
