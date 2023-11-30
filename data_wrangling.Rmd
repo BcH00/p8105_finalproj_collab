@@ -120,19 +120,7 @@ maps <-
   addMarkers(
     ~lon_wwtp, ~lat_wwtp
   )
+
+maps
 ```
-
-
-```{r}
-institution <- c("Amherst College", "Hampshire College", "Mount Holyoke College", "Smith College", "University of Massachusetts") 
-lat <- c(42.3709, 42.325079, 42.255586, 42.318119, 42.3912) 
-lng <- c(-72.5170, -72.530837, -72.574503, -72.638139, -72.5267) 
-students <- c(1792, 1175, 2255, 2600, 28635) 
-label <- paste0("<b>", institution, "</b><br>", students, " students", sep="") 
-ds <- dplyr::tibble(institution, lat, lng, students, label) 
-dplyr::glimpse(ds)
-
-library(leaflet) 
-m <- leaflet(ds) %>% addTiles() %>% addMarkers(~lng, ~lat, popup = ~ label)
-```
-
+14 wwtps map
