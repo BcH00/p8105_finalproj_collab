@@ -12,6 +12,7 @@ library(patchwork)
 library(readxl)
 library(lubridate)
 library(leaflet)
+library(plotly)
 
 knitr::opts_chunk$set(
 	echo = TRUE,
@@ -121,9 +122,9 @@ data analysis
 trend_plot_2021 <-
   rtqpcr |>
   filter(year == 2021) |>
-  group_by(month, wrrf_abbreviation) |>
+  group_by(month, wrrf_name) |>
   summarise(ave_conc = mean(concentration)) |>
-  ggplot(aes(x = month, y = ave_conc, color = wrrf_abbreviation, group = wrrf_abbreviation)) +
+  ggplot(aes(x = month, y = ave_conc, color = wrrf_name, group = wrrf_name)) +
   geom_line(alpha = .5) +
   geom_point(alpha = .5) +
   labs(x = "Month", 
@@ -135,14 +136,17 @@ trend_plot_2021 <-
 trend_plot_2021
 ```
 
+
+
+
 trend_plot_2022
 ```{r}
 trend_plot_2022 <-
   rtqpcr |>
   filter(year == 2022) |>
-  group_by(month, wrrf_abbreviation) |>
+  group_by(month, wrrf_name) |>
   summarise(ave_conc = mean(concentration)) |>
-  ggplot(aes(x = month, y = ave_conc, color = wrrf_abbreviation, group = wrrf_abbreviation)) +
+  ggplot(aes(x = month, y = ave_conc, color = wrrf_name, group = wrrf_name)) +
   geom_line(alpha = .5) +
   geom_point(alpha = .5) +
   labs(x = "Month", 
@@ -154,11 +158,50 @@ trend_plot_2022 <-
 trend_plot_2022
 ```
 
-tables
+tables 2021
 ```{r}
+box_2021 <- rtqpcr %>%
+  filter(year == 2021) %>%
+  group_by(month, wrrf_name) %>%
+  summarise(ave_conc = mean(concentration)) %>%
+  plot_ly(
+    x = ~ave_conc,
+    y = ~wrrf_name,
+    type = "box",
+    color = ~wrrf_name,
+    colors = "viridis"
+  ) %>%
+  layout(
+    xaxis = list(title = "Mean concentration (N/L)"),
+    yaxis = list(title = "Area"),
+    showlegend = FALSE
+  )
+
+box_2021
 
 ```
 
+tables 2022
+```{r}
+box_2022 <- rtqpcr %>%
+  filter(year == 2022) %>%
+  group_by(month, wrrf_name) %>%
+  summarise(ave_conc = mean(concentration)) %>%
+  plot_ly(
+    x = ~ave_conc,
+    y = ~wrrf_name,
+    type = "box",
+    color = ~wrrf_name,
+    colors = "viridis"
+  ) %>%
+  layout(
+    xaxis = list(title = "Mean concentration (N/L)"),
+    yaxis = list(title = "Area"),
+    showlegend = FALSE
+  )
+
+box_2021
+```
 
 
 
