@@ -102,6 +102,20 @@ nyc_wwtp <-
 nyc_wwtp
 ```
 
+Sub dataset
+```{r}
+rtqpcr <-
+  nyc_wwtp |>
+  filter(year %in% c(2021, 2022), technology == "RT-qPCR") |>
+  select(-lat_wwtp, -lon_wwtp, -annotation)
+
+dpcr <-
+  nyc_wwtp |>
+  filter(year %in% c(2021, 2022), technology == "dPCR") |>
+  select(-lat_wwtp, -lon_wwtp, -annotation)
+```
+dpcr is not large enough to do data analysis.
+
 ```{r}
 nyc_wwtp |>
   filter(year == 2022, technology == "RT-qPCR") |>
@@ -124,3 +138,11 @@ wwtp_map <-
 wwtp_map
 ```
 14 wwtps map
+
+
+##Questions
+1 The concentration of covid for each station on average
+2 literature review foe two diff tech (RT-qPCR, dPCR)
+3 Year 2021 and 2022
+
+
