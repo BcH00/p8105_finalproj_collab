@@ -124,6 +124,26 @@ nyc_wwtp |>
   geom_point(alpha = .5)
 ```
 
+```{r}
+avg_concentration_2022 = 
+  rtqpcr |> 
+  filter(year == 2022) |>
+  group_by(month, wrrf_abbreviation) |> 
+  summarise(data_value_avg = mean(concentration))
+```
+```{r}
+avg_concentration_2022 |> 
+  ggplot(aes(x = month, y = data_value_avg, color = wrrf_abbreviation, group = wrrf_abbreviation)) + 
+  geom_line(alpha = .5) +
+  geom_point() + 
+  labs(x = "Month", 
+       y = "Average Covid-19 Concentration of each waste water facility", 
+       title = "Average Covid-19 Concentration of each waste water facility in 2022 in New York State") + 
+  theme(legend.position = "bottom",
+        legend.box.background = element_rect())
+```
+
+
 
 ```{r}
 library(leaflet)
