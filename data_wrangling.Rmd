@@ -154,7 +154,10 @@ trend_plot_2022 <-
 trend_plot_2022
 ```
 
+tables
+```{r}
 
+```
 
 
 
