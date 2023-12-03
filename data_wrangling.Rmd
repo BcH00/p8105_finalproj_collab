@@ -2,7 +2,7 @@
 title: "Final"
 author: "Jianing Liu"
 date: "2023-11-29"
-output: github_document
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
@@ -118,19 +118,41 @@ dpcr is not large enough to do data analysis.
 
 data analysis
 ```{r}
-trend_plot <-
+trend_plot_2021 <-
   rtqpcr |>
   filter(year == 2021) |>
   group_by(month, wrrf_abbreviation) |>
   summarise(ave_conc = mean(concentration)) |>
   ggplot(aes(x = month, y = ave_conc, color = wrrf_abbreviation, group = wrrf_abbreviation)) +
   geom_line(alpha = .5) +
-  geom_point(alpha = .5)
+  geom_point(alpha = .5) +
+  labs(x = "Month", 
+       y = "Average Covid-19 Concentration of each waste water facility", 
+       title = "Average Covid-19 Concentration of each waste water facility in 2021 in New York State") + 
+  theme(legend.position = "bottom",
+        legend.box.background = element_rect())
 
-trend_plot
+trend_plot_2021
 ```
 
+trend_plot_2022
+```{r}
+trend_plot_2022 <-
+  rtqpcr |>
+  filter(year == 2022) |>
+  group_by(month, wrrf_abbreviation) |>
+  summarise(ave_conc = mean(concentration)) |>
+  ggplot(aes(x = month, y = ave_conc, color = wrrf_abbreviation, group = wrrf_abbreviation)) +
+  geom_line(alpha = .5) +
+  geom_point(alpha = .5) +
+  labs(x = "Month", 
+       y = "Average Covid-19 Concentration of each waste water facility", 
+       title = "Average Covid-19 Concentration of each waste water facility in 2022 in New York State") + 
+  theme(legend.position = "bottom",
+        legend.box.background = element_rect())
 
+trend_plot_2022
+```
 
 
 
@@ -155,28 +177,21 @@ nyc_wwtp |>
   geom_point(alpha = .5)
 ```
 
+
+
 ```{r}
-avg_concentration_2022 = 
-  rtqpcr |> 
-  filter(year == 2022) |>
-  group_by(month, wrrf_abbreviation) |> 
-  summarise(data_value_avg = mean(concentration))
+library(leaflet)
+wwtp_map <-
+  nyc_wwtp |>
+  leaflet() |>
+  addTiles() |>
+  addMarkers(
+    ~lon_wwtp, ~lat_wwtp
+  )
+
+wwtp_map
 ```
-```{r}
-avg_concentration_2022 |> 
-  ggplot(aes(x = month, y = data_value_avg, color = wrrf_abbreviation, group = wrrf_abbreviation)) + 
-  geom_line(alpha = .5) +
-  geom_point() + 
-  labs(x = "Month", 
-       y = "Average Covid-19 Concentration of each waste water facility", 
-       title = "Average Covid-19 Concentration of each waste water facility in 2022 in New York State") + 
-  theme(legend.position = "bottom",
-        legend.box.background = element_rect())
-```
-
-
-
-
+14 wwtps map
 
 
 ##Questions
