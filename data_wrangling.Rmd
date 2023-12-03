@@ -104,6 +104,51 @@ nyc_wwtp
 ```
 
 
+Creating the dataset for an overall trend for Covid-19 concentration across the 14 waste water facilities within New York State from 2020 to 2023.
+
+```{r}
+overall_trend <-
+  nyc_wwtp |>
+  filter(technology == "RT-qPCR") |>
+  select(-lat_wwtp, -lon_wwtp, -annotation) |>
+  group_by(year, month) |>
+  summarise(avg_conc = mean(concentration)) |>
+  unite("year_month",year, month, sep = "_") |>
+  mutate(Month = ymd(paste0(year_month, "_01")))
+```
+Plotting Scatterplot
+
+```{r}
+overall_trend |>
+  ggplot(aes(x = Month, y = avg_conc)) + 
+  geom_point(color = c("#FFA500")) +
+  geom_smooth(se = FALSE, color = "dark grey") +
+    labs(
+      x = "Time", 
+      y = "Monthly average Covid-19 concentration in waste water in NY (N/L)") + 
+  theme(axis.line = element_line(color = "grey"), 
+      panel.background = element_blank(), 
+      legend.position = "none", 
+      panel.grid.major = element_line(color = "light grey", linetype = "dashed"),
+      plot.title = element_text(hjust = 0.5)) + 
+  ggtitle("Monthly average Covid-19 concentration in waste water in NY measured from 2020 to 2023")
+```
+
+
+Histogram
+
+```{r}
+overall_trend |>
+  ggplot(aes(x = year_month, y = avg_conc)) +
+  geom_col(position = "dodge") +
+  stat_summary(fun = mean, geom = "line", aes(group = 1), color = "orange", size = 1) +
+  labs(x = "Year-Month", y = "Average Concentration") +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1, color = "black"))
+```
+
+
+
+
 
 Sub dataset
 ```{r}
@@ -125,8 +170,8 @@ trend_plot_2021 <-
   rtqpcr |>
   filter(year == 2021) |>
   group_by(month, wrrf_name) |>
-  summarise(ave_conc = mean(concentration)) |>
-  ggplot(aes(x = month, y = ave_conc, color = wrrf_name, group = wrrf_name)) +
+  summarise(avg_conc = mean(concentration)) |>
+  ggplot(aes(x = month, y = avg_conc, color = wrrf_name, group = wrrf_name)) +
   geom_line(alpha = .5) +
   geom_point(alpha = .5) +
   labs(x = "Month", 
@@ -147,8 +192,8 @@ trend_plot_2022 <-
   rtqpcr |>
   filter(year == 2022) |>
   group_by(month, wrrf_name) |>
-  summarise(ave_conc = mean(concentration)) |>
-  ggplot(aes(x = month, y = ave_conc, color = wrrf_name, group = wrrf_name)) +
+  summarise(avg_conc = mean(concentration)) |>
+  ggplot(aes(x = month, y = avg_conc, color = wrrf_name, group = wrrf_name)) +
   geom_line(alpha = .5) +
   geom_point(alpha = .5) +
   labs(x = "Month", 
@@ -165,9 +210,9 @@ tables 2021
 box_2021 <- rtqpcr %>%
   filter(year == 2021) %>%
   group_by(month, wrrf_name) %>%
-  summarise(ave_conc = mean(concentration)) %>%
+  summarise(avg_conc = mean(concentration)) %>%
   plot_ly(
-    x = ~ave_conc,
+    x = ~avg_conc,
     y = ~wrrf_name,
     type = "box",
     color = ~wrrf_name,
@@ -188,9 +233,9 @@ tables 2022
 box_2022 <- rtqpcr %>%
   filter(year == 2022) %>%
   group_by(month, wrrf_name) %>%
-  summarise(ave_conc = mean(concentration)) %>%
+  summarise(avg_conc = mean(concentration)) %>%
   plot_ly(
-    x = ~ave_conc,
+    x = ~avg_conc,
     y = ~wrrf_name,
     type = "box",
     color = ~wrrf_name,
