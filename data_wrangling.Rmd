@@ -123,9 +123,9 @@ trend_plot <-
   filter(year == 2021) |>
   group_by(month, wrrf_abbreviation) |>
   summarise(ave_conc = mean(concentration)) |>
-  ggplot(aes(x = month, y = ave_conc, color = wrrf_abbreviation)) +
-  geom_line() +
-  geom_point()
+  ggplot(aes(x = month, y = ave_conc, color = wrrf_abbreviation, group = wrrf_abbreviation)) +
+  geom_line(alpha = .5) +
+  geom_point(alpha = .5)
 
 trend_plot
 ```
