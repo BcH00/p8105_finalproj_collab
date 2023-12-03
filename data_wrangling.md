@@ -1,48 +1,37 @@
----
-title: "Final"
-author: "Jianing Liu"
-date: "2023-11-29"
-output: github_document
----
+Final
+================
+Jianing Liu
+2023-11-29
 
-```{r setup, include=FALSE}
-library(tidyverse)
-library(ggridges)
-library(patchwork)
-library(readxl)
-library(lubridate)
-library(leaflet)
-
-knitr::opts_chunk$set(
-	echo = TRUE,
-	warning = FALSE,
-	fig.width = 16, 
-  fig.height = 12,
-  out.width = "90%"
-)
-
-theme_set(theme_minimal() + theme(legend.position = "bottom"))
-
-options(
-  ggplot2.continuous.colour = "viridis",
-  ggplot2.continuous.fill = "viridis"
-)
-
-scale_colour_discrete = scale_colour_viridis_d
-scale_fill_discrete = scale_fill_viridis_d
-```
-
-
-```{r load the data files}
+``` r
 map <-
   read_csv("data/HydroWASTE_v10.csv")
+```
 
+    ## Rows: 58502 Columns: 25
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## chr  (5): WWTP_NAME, COUNTRY, CNTRY_ISO, STATUS, LEVEL
+    ## dbl (20): WASTE_ID, SOURCE, ORG_ID, LAT_WWTP, LON_WWTP, QUAL_LOC, LAT_OUT, L...
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+``` r
 wwtp <-
   read_csv("data/SARS-CoV-2_concentrations_measured_in_NYC_Wastewater_20231129.csv")
 ```
 
+    ## Rows: 4270 Columns: 9
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## chr (6): Sample Date, Test date, WRRF Name, WRRF Abbreviation, Annotation, T...
+    ## num (3): Concentration SARS-CoV-2 gene target (N1 Copies/L), Per capita SARS...
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 
-```{r clean the mapping data file and rename plant names}
+``` r
 map_new <-
   map |>
   janitor::clean_names() |>
@@ -65,17 +54,17 @@ map_new <-
   ))
 ```
 
-```{r clean the waste water data file}
+``` r
 wwtp_cleaned <-
   wwtp |>
   janitor:: clean_names()
 ```
 
-```{r merge the waste water data file and mapping data file}
+``` r
 merge_df <- inner_join(map_new, wwtp_cleaned, by = "wrrf_abbreviation")
 ```
 
-```{r choose the variables from the merged data file}
+``` r
 nyc_wwtp <-
   merge_df |>
   rename(concentration = concentration_sars_co_v_2_gene_target_n1_copies_l) |>
@@ -102,8 +91,25 @@ nyc_wwtp <-
 nyc_wwtp
 ```
 
+    ## # A tibble: 4,129 × 10
+    ##    lat_wwtp lon_wwtp wrrf_abbreviation month   day year  wrrf_name concentration
+    ##       <dbl>    <dbl> <chr>             <fct> <int> <chr> <chr>             <dbl>
+    ##  1     40.8    -73.9 WI                Augu…    31 2020  Wards Is…          1339
+    ##  2     40.8    -73.9 WI                Sept…     8 2020  Wards Is…          1065
+    ##  3     40.8    -73.9 WI                Sept…    13 2020  Wards Is…           394
+    ##  4     40.8    -73.9 WI                Sept…    15 2020  Wards Is…           316
+    ##  5     40.8    -73.9 WI                Sept…    20 2020  Wards Is…          1250
+    ##  6     40.8    -73.9 WI                Octo…     6 2020  Wards Is…          1152
+    ##  7     40.8    -73.9 WI                Octo…    11 2020  Wards Is…           600
+    ##  8     40.8    -73.9 WI                Octo…    13 2020  Wards Is…          2066
+    ##  9     40.8    -73.9 WI                Octo…    18 2020  Wards Is…           444
+    ## 10     40.8    -73.9 WI                Octo…    20 2020  Wards Is…          3026
+    ## # ℹ 4,119 more rows
+    ## # ℹ 2 more variables: annotation <chr>, technology <chr>
+
 Sub dataset
-```{r}
+
+``` r
 rtqpcr <-
   nyc_wwtp |>
   filter(year %in% c(2021, 2022), technology == "RT-qPCR") |>
@@ -114,10 +120,12 @@ dpcr <-
   filter(year %in% c(2021, 2022), technology == "dPCR") |>
   select(-lat_wwtp, -lon_wwtp, -annotation)
 ```
+
 dpcr is not large enough to do data analysis.
 
 data analysis
-```{r}
+
+``` r
 trend_plot <-
   rtqpcr |>
   filter(year == 2021) |>
@@ -126,28 +134,18 @@ trend_plot <-
   ggplot(aes(x = month, y = ave_conc, color = wrrf_abbreviation, group = wrrf_abbreviation)) +
   geom_line(alpha = .5) +
   geom_point(alpha = .5)
+```
 
+    ## `summarise()` has grouped output by 'month'. You can override using the
+    ## `.groups` argument.
+
+``` r
 trend_plot
 ```
 
+<img src="data_wrangling_files/figure-gfm/unnamed-chunk-2-1.png" width="90%" />
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-```{r}
+``` r
 nyc_wwtp |>
   filter(year == 2022, technology == "RT-qPCR") |>
   group_by(month, wrrf_abbreviation) |>
@@ -155,14 +153,20 @@ nyc_wwtp |>
   geom_point(alpha = .5)
 ```
 
-```{r}
+<img src="data_wrangling_files/figure-gfm/unnamed-chunk-3-1.png" width="90%" />
+
+``` r
 avg_concentration_2022 = 
   rtqpcr |> 
   filter(year == 2022) |>
   group_by(month, wrrf_abbreviation) |> 
   summarise(data_value_avg = mean(concentration))
 ```
-```{r}
+
+    ## `summarise()` has grouped output by 'month'. You can override using the
+    ## `.groups` argument.
+
+``` r
 avg_concentration_2022 |> 
   ggplot(aes(x = month, y = data_value_avg, color = wrrf_abbreviation, group = wrrf_abbreviation)) + 
   geom_line(alpha = .5) +
@@ -174,14 +178,7 @@ avg_concentration_2022 |>
         legend.box.background = element_rect())
 ```
 
+<img src="data_wrangling_files/figure-gfm/unnamed-chunk-5-1.png" width="90%" />
 
-
-
-
-
-##Questions
-1 The concentration of covid for each station on average
-2 literature review foe two diff tech (RT-qPCR, dPCR)
-3 Year 2021 and 2022
-
-
+\##Questions 1 The concentration of covid for each station on average 2
+literature review foe two diff tech (RT-qPCR, dPCR) 3 Year 2021 and 2022
