@@ -12,6 +12,7 @@ library(patchwork)
 library(readxl)
 library(lubridate)
 library(leaflet)
+library(plotly)
 
 knitr::opts_chunk$set(
 	echo = TRUE,
@@ -102,6 +103,165 @@ nyc_wwtp <-
 nyc_wwtp
 ```
 
+
+Creating the dataset for an overall trend for Covid-19 concentration across the 14 waste water facilities within New York State from 2020 to 2023.
+
+```{r}
+overall_trend <-
+  nyc_wwtp |>
+  filter(technology == "RT-qPCR") |>
+  select(-lat_wwtp, -lon_wwtp, -annotation) |>
+  group_by(year, month) |>
+  summarise(avg_conc = mean(concentration)) |>
+  unite("year_month",year, month, sep = "_") |>
+  mutate(Month = ymd(paste0(year_month, "_01")))
+```
+Plotting Scatterplot
+
+```{r}
+overall_trend |>
+  ggplot(aes(x = Month, y = avg_conc)) + 
+  geom_point(color = c("#FFA500")) +
+  geom_smooth(se = FALSE, color = "dark grey") +
+    labs(
+      x = "Time", 
+      y = "Monthly average Covid-19 concentration in waste water in NY (N/L)") + 
+  theme(axis.line = element_line(color = "grey"), 
+      panel.background = element_blank(), 
+      legend.position = "none", 
+      panel.grid.major = element_line(color = "light grey", linetype = "dashed"),
+      plot.title = element_text(hjust = 0.5)) + 
+  ggtitle("Monthly average Covid-19 concentration in waste water in NY measured from 2020 to 2023")
+```
+
+
+Histogram
+
+```{r}
+overall_trend |>
+  ggplot(aes(x = year_month, y = avg_conc)) +
+  geom_col(position = "dodge") +
+  stat_summary(fun = mean, geom = "line", aes(group = 1), color = "orange", size = 1) +
+  labs(x = "Year-Month", y = "Average Concentration") +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1, color = "black"))
+```
+
+
+
+
+
+Sub dataset
+```{r}
+rtqpcr <-
+  nyc_wwtp |>
+  filter(year %in% c(2021, 2022), technology == "RT-qPCR") |>
+  select(-lat_wwtp, -lon_wwtp, -annotation)
+
+dpcr <-
+  nyc_wwtp |>
+  filter(year %in% c(2021, 2022), technology == "dPCR") |>
+  select(-lat_wwtp, -lon_wwtp, -annotation)
+```
+dpcr is not large enough to do data analysis.
+
+data analysis
+```{r}
+trend_plot_2021 <-
+  rtqpcr |>
+  filter(year == 2021) |>
+  group_by(month, wrrf_name) |>
+  summarise(avg_conc = mean(concentration)) |>
+  ggplot(aes(x = month, y = avg_conc, color = wrrf_name, group = wrrf_name)) +
+  geom_line(alpha = .5) +
+  geom_point(alpha = .5) +
+  labs(x = "Month", 
+       y = "Average Covid-19 Concentration of each waste water facility", 
+       title = "Average Covid-19 Concentration of each waste water facility in 2021 in New York State") + 
+  theme(legend.position = "bottom",
+        legend.box.background = element_rect())
+
+trend_plot_2021
+```
+
+
+
+
+trend_plot_2022
+```{r}
+trend_plot_2022 <-
+  rtqpcr |>
+  filter(year == 2022) |>
+  group_by(month, wrrf_name) |>
+  summarise(avg_conc = mean(concentration)) |>
+  ggplot(aes(x = month, y = avg_conc, color = wrrf_name, group = wrrf_name)) +
+  geom_line(alpha = .5) +
+  geom_point(alpha = .5) +
+  labs(x = "Month", 
+       y = "Average Covid-19 Concentration of each waste water facility", 
+       title = "Average Covid-19 Concentration of each waste water facility in 2022 in New York State") + 
+  theme(legend.position = "bottom",
+        legend.box.background = element_rect())
+
+trend_plot_2022
+```
+
+tables 2021
+```{r}
+box_2021 <- rtqpcr %>%
+  filter(year == 2021) %>%
+  group_by(month, wrrf_name) %>%
+  summarise(avg_conc = mean(concentration)) %>%
+  plot_ly(
+    x = ~avg_conc,
+    y = ~wrrf_name,
+    type = "box",
+    color = ~wrrf_name,
+    colors = "viridis"
+  ) %>%
+  layout(
+    xaxis = list(title = "Mean concentration (N/L)"),
+    yaxis = list(title = "Area"),
+    showlegend = FALSE
+  )
+
+box_2021
+
+```
+
+tables 2022
+```{r}
+box_2022 <- rtqpcr %>%
+  filter(year == 2022) %>%
+  group_by(month, wrrf_name) %>%
+  summarise(avg_conc = mean(concentration)) %>%
+  plot_ly(
+    x = ~avg_conc,
+    y = ~wrrf_name,
+    type = "box",
+    color = ~wrrf_name,
+    colors = "viridis"
+  ) %>%
+  layout(
+    xaxis = list(title = "Mean concentration (N/L)"),
+    yaxis = list(title = "Area"),
+    showlegend = FALSE
+  )
+
+box_2021
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
 ```{r}
 nyc_wwtp |>
   filter(year == 2022, technology == "RT-qPCR") |>
@@ -109,6 +269,7 @@ nyc_wwtp |>
   ggplot(aes(x = month, y = concentration, color = wrrf_abbreviation)) +
   geom_point(alpha = .5)
 ```
+
 
 
 ```{r}
@@ -124,3 +285,11 @@ wwtp_map <-
 wwtp_map
 ```
 14 wwtps map
+
+
+##Questions
+1 The concentration of covid for each station on average
+2 literature review foe two diff tech (RT-qPCR, dPCR)
+3 Year 2021 and 2022
+
+
